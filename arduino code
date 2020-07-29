@@ -1,0 +1,28 @@
+#include<SoftwareSerial.h>
+
+SoftwareSerial gsm(rx,tx);
+
+int rib = ribpin;
+int state =0;
+int last_state = 1;
+int current_state = 1;
+void setup() {
+  pinMode(rib,INPUT);
+  gsm.begin(9600);
+  gsm.write("AT");
+  gsm.write("AT+CMGF=1");//to enable text mode
+  
+}
+
+void loop() {
+current_state = digitalRead(rib);
+if(current_state == 1 && last_state == 0){
+  gsm.write("AT+CMGS='+zzxxxxxxxxxx'");//the nomber
+  gsm.write("there are person in here");//the text of the message
+  gsm.write(0x1A);
+  last_state = current_state;
+}
+if(current_state == 0 && last_state == 1){
+  last_state=0;
+}
+}
